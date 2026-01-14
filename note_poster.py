@@ -7,7 +7,7 @@ class NotePoster:
         self.session_cookie = session_cookie
         self.base_url = "https://note.com/api/v1"
         self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64 ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
@@ -17,14 +17,13 @@ class NotePoster:
         """
         記事を投稿する（下書きとして作成）
         """
-        # MarkdownをHTMLに変換（NOTEのAPIはHTML形式を期待する場合が多い）
         body_html = markdown.markdown(body_markdown)
         
         url = f"{self.base_url}/text_notes"
         payload = {
             "name": title,
             "body": body_html,
-            "status": "draft", # 最初は下書きとして作成
+            "status": "draft",
             "publish_at": None
         }
         
@@ -35,11 +34,11 @@ class NotePoster:
             data=json.dumps(payload)
         )
         
-                if response.status_code in [200, 201]:
+        if response.status_code in [200, 201]:
             print("Successfully created draft!")
-            # 成功した場合は、エラーにならないようにデータを返す
-            return {"data": response.json().get("data", response.json())}
-
+            # どんな形式で返ってきてもエラーにならないように処理
+            res_data = response.json()
+            return {"data": res_data.get("data", res_data)}
         else:
             print(f"Failed to post: {response.status_code}")
             print(response.text)
