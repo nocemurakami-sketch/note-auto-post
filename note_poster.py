@@ -35,9 +35,11 @@ class NotePoster:
             data=json.dumps(payload)
         )
         
-        if response.status_code == 201 or response.status_code == 200:
+                if response.status_code in [200, 201]:
             print("Successfully created draft!")
-            return response.json()
+            # 成功した場合は、エラーにならないようにデータを返す
+            return {"data": response.json().get("data", response.json())}
+
         else:
             print(f"Failed to post: {response.status_code}")
             print(response.text)
