@@ -16,19 +16,20 @@ class NotePoster:
         url = "https://note.com/api/v1/text_notes"
         payload = {"name": title, "body": body_html, "status": "draft"}
         
-        print(f"Sending request to NOTE..." )
-        response = requests.post(url, headers=self.headers, cookies=self.cookies, json=payload)
-        
-        if response.status_code in [200, 201]:
-            data = response.json()
-            # 投稿成功時にIDを表示して、確実に届いたか確認できるようにする
-            note_id = data.get('data', {}).get('id', 'unknown')
-            print(f"Successfully created draft! ID: {note_id}")
-            return data
-        else:
-            print(f"Error: {response.status_code}")
-            print(response.text)
+        print("--- NOTE API DEBUG INFO ---" )
+        try:
+            response = requests.post(url, headers=self.headers, cookies=self.cookies, json=payload)
+            print(f"Status Code: {response.status_code}")
+            print(f"Response Text: {response.text}") # ここに本当の原因が表示されます
+            
+            if response.status_code in [200, 201]:
+                data = response.json()
+                return data
+            else:
+                return None
+        except Exception as e:
+            print(f"Network Error: {e}")
             return None
 
     def publish_article(self, note_id):
-        return True # 今回は下書き確認を優先するため簡略化
+        return True
