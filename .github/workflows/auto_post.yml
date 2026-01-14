@@ -1,0 +1,30 @@
+name: NOTE Auto Post
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 毎日日本時間午前9時に実行
+  workflow_dispatch: # 手動実行ボタンを出す設定
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run auto post script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NOTE_SESSION: ${{ secrets.NOTE_SESSION }}
+          POST_TOPIC: "AIと未来の働き方"
+          AUTO_PUBLISH: "false"
+        run: python main.py
